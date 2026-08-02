@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.1](https://github.com/Jmainguy/helm-webapp/compare/webapp-v3.2.0...webapp-v3.2.1) (2026-08-02)
+
+
+### Bug Fixes
+
+* **ci:** push helm charts to zot.soh.re with DOCKER credentials ([7300af5](https://github.com/Jmainguy/helm-webapp/commit/7300af58e6b41ad9f62ff008f5534f1e4847af3c))
+
+
+### Reverts
+
+* restore HELM_* release workflow ([988d0a2](https://github.com/Jmainguy/helm-webapp/commit/988d0a279dafdcb4eb72bdb90aeb77c2c5c9c084))
+
 ## [3.2.0](https://github.com/Jmainguy/helm-webapp/compare/webapp-v3.1.0...webapp-v3.2.0) (2026-08-02)
 
 
