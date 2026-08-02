@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/Jmainguy/helm-webapp/compare/webapp-v3.1.0...webapp-v3.2.0) (2026-08-02)
+
+
+### Features
+
+* add optional in-cluster Redis (Chainguard) ([789a515](https://github.com/Jmainguy/helm-webapp/commit/789a51556bfd35fd2eedc77d176c4fb94629cd3d))
+
 ## [3.1.0](https://github.com/Standouthost/helm-webapp/compare/webapp-v3.0.0...webapp-v3.1.0) (2026-02-28)
 
 
