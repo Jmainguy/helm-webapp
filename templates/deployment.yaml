@@ -24,8 +24,12 @@ spec:
                 name: {{ .Values.secret.name }}
           {{- end }}
 
-          {{- if .Values.env }}
+          {{- if or .Values.env (and .Values.redis.enabled .Values.redis.injectEnv) }}
           env:
+            {{- if and .Values.redis.enabled .Values.redis.injectEnv }}
+            - name: REDIS_URL
+              value: {{ printf "redis://%s:%v/0" .Values.redis.name .Values.redis.port | quote }}
+            {{- end }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

@@ -32,6 +32,23 @@ postgres:
       database: app
       owner: app
 
+redis:
+  enabled: false
+  name: redis
+  replicas: 1
+  port: 6379
+  image:
+    repository: cgr.dev/chainguard
+    name: redis
+    tag: latest
+    pullPolicy: IfNotPresent
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources: {}
+  # When true, set REDIS_URL on the webapp container (redis://NAME:PORT/0).
+  injectEnv: false
+
 # ConfigMap section - user can define which configmaps to mount
 configMaps: []
   # - name: custom-configmap
