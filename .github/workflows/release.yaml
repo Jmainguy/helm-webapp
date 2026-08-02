@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release-please:
-    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.1.0
+    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.0.2
     secrets:
       helm_username: ${{ secrets.HELM_USERNAME }}
       helm_password: ${{ secrets.HELM_PASSWORD }}
