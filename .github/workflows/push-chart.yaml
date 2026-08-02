@@ -1,0 +1,47 @@
+name: Push Helm chart to zot
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Chart version (defaults to version in Chart.yaml)
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Helm
+        run: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      - name: Resolve chart version
+        id: version
+        run: |
+          if [ -n "${{ inputs.version }}" ]; then
+            echo "value=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=$(awk '/^version:/ { print $2 }' Chart.yaml)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Login to zot
+        env:
+          HELM_USER: ${{ secrets.HELM_USERNAME }}
+          HELM_PASS: ${{ secrets.HELM_PASSWORD }}
+        run: |
+          if [ -z "$HELM_USER" ] || [ -z "$HELM_PASS" ]; then
+            echo "::error::Set HELM_USERNAME and HELM_PASSWORD repo secrets for zot.soh.re"
+            exit 1
+          fi
+          echo "$HELM_PASS" | helm registry login zot.soh.re --username "$HELM_USER" --password-stdin
+
+      - name: Package and push
+        run: |
+          VERSION="${{ steps.version.outputs.value }}"
+          helm package . --version "$VERSION"
+          helm push "webapp-${VERSION}.tgz" oci://zot.soh.re
+          helm show chart "oci://zot.soh.re/webapp" --version "$VERSION"
