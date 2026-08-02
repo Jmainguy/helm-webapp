@@ -11,11 +11,10 @@ permissions:
 
 jobs:
   release-please:
-    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.1.0
+    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1
     secrets:
-      # zot.soh.re uses the same OCI credentials as container images.
-      helm_username: ${{ secrets.DOCKER_USERNAME }}
-      helm_password: ${{ secrets.DOCKER_PASSWORD }}
+      helm_username: ${{ secrets.HELM_USERNAME }}
+      helm_password: ${{ secrets.HELM_PASSWORD }}
     with:
       helm_registry: zot.soh.re
       chart_name: "webapp"
