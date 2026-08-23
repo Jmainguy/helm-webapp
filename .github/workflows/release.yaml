@@ -65,7 +65,6 @@ jobs:
           test -n "${HELM_USER}"
           test -n "${HELM_PASS}"
           printf '%s' "${HELM_PASS}" | helm registry login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
-          printf '%s' "${HELM_PASS}" | notation login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
 
       - name: Package and push chart
         id: push
@@ -82,6 +81,8 @@ jobs:
           NOTATION_PRIVATE_KEY: ${{ secrets.NOTATION_PRIVATE_KEY }}
           NOTATION_CERTIFICATE_CHAIN: ${{ secrets.NOTATION_CERTIFICATE_CHAIN }}
           NOTATION_CA_CERTIFICATE: ${{ secrets.NOTATION_CA_CERTIFICATE }}
+          NOTATION_USERNAME: ${{ secrets.HELM_USERNAME }}
+          NOTATION_PASSWORD: ${{ secrets.HELM_PASSWORD }}
           DIGEST: ${{ steps.push.outputs.digest }}
         run: |
           notation_config="${RUNNER_TEMP}/notation-config"
