@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.0...helm-webapp-v4.1.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** use supported Notation CLI version ([7a1abc1](https://github.com/Jmainguy/helm-webapp/commit/7a1abc107b7f1be7a4bc9ca17cf4e3b80ed66370))
+
 ## [4.1.0](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.0.1...helm-webapp-v4.1.0) (2026-08-23)
 
 
