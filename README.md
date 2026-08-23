@@ -1,6 +1,6 @@
 # helm-webapp
 
-![Version: 4.2.3](https://img.shields.io/badge/Version-4.2.3-informational?style=flat-square)
+![Version: 4.2.4](https://img.shields.io/badge/Version-4.2.4-informational?style=flat-square)
 
 A helm chart for a standard webapp using istio ingress
 
@@ -9,7 +9,7 @@ A helm chart for a standard webapp using istio ingress
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | configMaps | list | `[]` |  |
-| env | list | `[]` |  |
+| env | object | `{}` |  |
 | image.name | string | `"hey.soh.re"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"zot.soh.re"` |  |
