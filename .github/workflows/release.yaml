@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release:
-    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.3
+    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.4
     with:
       chart_name: helm-webapp
       chart_path: .
