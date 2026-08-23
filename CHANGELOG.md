@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.0](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.4...helm-webapp-v4.2.0) (2026-08-23)
+
+
+### Features
+
+* **ci:** adopt reusable signed Helm release ([ac2be5e](https://github.com/Jmainguy/helm-webapp/commit/ac2be5eba7d317ba93be84b35773f5de6afd91fc))
+
 ## [4.1.4](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.3...helm-webapp-v4.1.4) (2026-08-23)
 
 
