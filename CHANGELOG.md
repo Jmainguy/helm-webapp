@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.4](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.3...helm-webapp-v4.2.4) (2026-08-23)
+
+
+### Bug Fixes
+
+* **values:** accept environment variable maps ([a88520f](https://github.com/Jmainguy/helm-webapp/commit/a88520fa9e9a932595e566d889005c7250fa96bb))
+
 ## [4.2.3](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.2...helm-webapp-v4.2.3) (2026-08-23)
 
 
