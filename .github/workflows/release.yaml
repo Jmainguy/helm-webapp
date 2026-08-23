@@ -10,103 +10,18 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-please:
-    runs-on: ubuntu-latest
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
-    steps:
-      - name: Create release
-        id: release
-        uses: googleapis/release-please-action@v5.0.0
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-
-  publish:
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
-    runs-on: ubuntu-latest
-    env:
-      CHART_NAME: helm-webapp
-      CHART_VERSION: ${{ needs.release-please.outputs.version }}
-      REGISTRY: zot.soh.re
-      REGISTRY_NAMESPACE: jmainguy
-    steps:
-      - name: Check out release commit
-        uses: actions/checkout@v7.0.1
-        with:
-          fetch-depth: 0
-
-      - name: Set up Helm
-        uses: azure/setup-helm@v5.0.1
-
-      - name: Set up Notation
-        uses: notaryproject/notation-action/setup@v1.2.2
-        with:
-          version: 1.3.1
-
-      - name: Add release annotations
-        env:
-          CREATED: ${{ github.event.head_commit.timestamp }}
-          REVISION: ${{ github.sha }}
-        run: |
-          cat >> Chart.yaml <<EOF
-            org.opencontainers.image.created: "${CREATED}"
-            org.opencontainers.image.revision: "${REVISION}"
-            org.opencontainers.image.version: "${CHART_VERSION}"
-          EOF
-          helm lint .
-
-      - name: Log in to Zot
-        env:
-          HELM_USER: ${{ secrets.HELM_USERNAME }}
-          HELM_PASS: ${{ secrets.HELM_PASSWORD }}
-        run: |
-          test -n "${HELM_USER}"
-          test -n "${HELM_PASS}"
-          printf '%s' "${HELM_PASS}" | helm registry login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
-
-      - name: Package and push chart
-        id: push
-        run: |
-          helm package . --version "${CHART_VERSION}"
-          push_output="$(helm push "${CHART_NAME}-${CHART_VERSION}.tgz" "oci://${REGISTRY}/${REGISTRY_NAMESPACE}")"
-          printf '%s\n' "${push_output}"
-          digest="$(printf '%s\n' "${push_output}" | awk '/^Digest: / { print $2 }')"
-          test -n "${digest}"
-          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
-
-      - name: Sign and verify chart digest
-        env:
-          NOTATION_PRIVATE_KEY: ${{ secrets.NOTATION_PRIVATE_KEY }}
-          NOTATION_CERTIFICATE_CHAIN: ${{ secrets.NOTATION_CERTIFICATE_CHAIN }}
-          NOTATION_CA_CERTIFICATE: ${{ secrets.NOTATION_CA_CERTIFICATE }}
-          NOTATION_USERNAME: ${{ secrets.HELM_USERNAME }}
-          NOTATION_PASSWORD: ${{ secrets.HELM_PASSWORD }}
-          DIGEST: ${{ steps.push.outputs.digest }}
-        run: |
-          notation_config="${RUNNER_TEMP}/notation-config"
-          signing_dir="${RUNNER_TEMP}/notation-signing"
-          mkdir -p "${notation_config}/notation/truststore/x509/ca/jmainguy" "${signing_dir}"
-          chmod 700 "${notation_config}" "${signing_dir}"
-          key_file="${signing_dir}/signer.key"
-          certificate_file="${signing_dir}/certificate-chain.pem"
-          printf '%s' "${NOTATION_PRIVATE_KEY}" > "${key_file}"
-          printf '%s' "${NOTATION_CERTIFICATE_CHAIN}" > "${certificate_file}"
-          printf '%s' "${NOTATION_CA_CERTIFICATE}" > "${notation_config}/notation/truststore/x509/ca/jmainguy/ca.crt"
-          chmod 600 "${key_file}" "${certificate_file}"
-          jq -n \
-            --arg key "${key_file}" \
-            --arg certificate "${certificate_file}" \
-            '{default:"jon-soh-re",keys:[{name:"jon-soh-re",keyPath:$key,certPath:$certificate}]}' \
-            > "${notation_config}/notation/signingkeys.json"
-          jq -n --arg scope "${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}" \
-            '{version:"1.0",trustPolicies:[{name:"jmainguy",registryScopes:[$scope],signatureVerification:{level:"strict"},trustStores:["ca:jmainguy"],trustedIdentities:["*"]}]}' \
-            > "${notation_config}/notation/trustpolicy.json"
-          artifact="${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}@${DIGEST}"
-          XDG_CONFIG_HOME="${notation_config}" notation sign --key jon-soh-re --signature-format jws "${artifact}"
-          XDG_CONFIG_HOME="${notation_config}" notation verify "${artifact}"
-
-      - name: Verify published chart
-        run: |
-          helm show chart "oci://${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}" --version "${CHART_VERSION}"
+  release:
+    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1
+    with:
+      chart_name: helm-webapp
+      chart_path: .
+      helm_registry: zot.soh.re
+      registry_namespace: jmainguy
+      notation_key_name: jon-soh-re
+    secrets:
+      release_token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+      helm_username: ${{ secrets.HELM_USERNAME }}
+      helm_password: ${{ secrets.HELM_PASSWORD }}
+      notation_private_key: ${{ secrets.NOTATION_PRIVATE_KEY }}
+      notation_certificate_chain: ${{ secrets.NOTATION_CERTIFICATE_CHAIN }}
+      notation_ca_certificate: ${{ secrets.NOTATION_CA_CERTIFICATE }}
