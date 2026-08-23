@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.2](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.1...helm-webapp-v4.1.2) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** authenticate Notation without credential store ([3e2cff5](https://github.com/Jmainguy/helm-webapp/commit/3e2cff5fefbb28f2b7bdf2d8d650ad4ddd9f79e6))
+
 ## [4.1.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.0...helm-webapp-v4.1.1) (2026-08-23)
 
 
