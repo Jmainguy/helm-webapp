@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.0...helm-webapp-v4.2.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** use maintained Notation action workflow ([407fb03](https://github.com/Jmainguy/helm-webapp/commit/407fb0300f41d5f9303c714c4b20f357947cb825))
+
 ## [4.2.0](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.4...helm-webapp-v4.2.0) (2026-08-23)
 
 
