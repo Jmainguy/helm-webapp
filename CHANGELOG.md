@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.0.1...helm-webapp-v4.1.0) (2026-08-23)
+
+
+### Features
+
+* **ci:** sign releases with Notation ([00f8fbd](https://github.com/Jmainguy/helm-webapp/commit/00f8fbde086fe4064b0092cb6983caa8ce49cd48))
+
 ## [4.0.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.0.0...helm-webapp-v4.0.1) (2026-08-23)
 
 
