@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.3](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.2...helm-webapp-v4.1.3) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** scope Notation trust to chart repository ([ccaadd5](https://github.com/Jmainguy/helm-webapp/commit/ccaadd50a624161264526d9c26bf6de28255dc7b))
+
 ## [4.1.2](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.1...helm-webapp-v4.1.2) (2026-08-23)
 
 
