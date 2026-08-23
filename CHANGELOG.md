@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.0.0...helm-webapp-v4.0.1) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** authenticate Cosign to Zot ([cf04578](https://github.com/Jmainguy/helm-webapp/commit/cf04578c08b942209fa87dac5d5bcd2c02fd674b))
+
 ## [4.0.0](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v3.3.0...helm-webapp-v4.0.0) (2026-08-23)
 
 
