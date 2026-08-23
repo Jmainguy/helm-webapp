@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.4](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.3...helm-webapp-v4.1.4) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** use Zot-compatible Notation signature profile ([f33d4da](https://github.com/Jmainguy/helm-webapp/commit/f33d4da7ca50c9de2fc5603d58dcaf3fa9769914))
+
 ## [4.1.3](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.1.2...helm-webapp-v4.1.3) (2026-08-23)
 
 
