@@ -62,7 +62,7 @@ configMaps: []
   #       echo "\n";
   #       ?>
 
-env: []
+env: {}
   #REPO_URL: jmainguy.com
 # Persistence: list of volumes to mount. Each item can create a new PVC or use an existing one.
 persistence: []
