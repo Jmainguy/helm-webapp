@@ -104,7 +104,7 @@ jobs:
             '{version:"1.0",trustPolicies:[{name:"jmainguy",registryScopes:[$scope],signatureVerification:{level:"strict"},trustStores:["ca:jmainguy"],trustedIdentities:["*"]}]}' \
             > "${notation_config}/notation/trustpolicy.json"
           artifact="${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}@${DIGEST}"
-          XDG_CONFIG_HOME="${notation_config}" notation sign --key jon-soh-re "${artifact}"
+          XDG_CONFIG_HOME="${notation_config}" notation sign --key jon-soh-re --signature-format jws "${artifact}"
           XDG_CONFIG_HOME="${notation_config}" notation verify "${artifact}"
 
       - name: Verify published chart
