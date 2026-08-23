@@ -100,7 +100,8 @@ jobs:
             --arg certificate "${certificate_file}" \
             '{default:"jon-soh-re",keys:[{name:"jon-soh-re",keyPath:$key,certPath:$certificate}]}' \
             > "${notation_config}/notation/signingkeys.json"
-          jq -n '{version:"1.0",trustPolicies:[{name:"jmainguy",registryScopes:["zot.soh.re/jmainguy/*"],signatureVerification:{level:"strict"},trustStores:["ca:jmainguy"],trustedIdentities:["*"]}]}' \
+          jq -n --arg scope "${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}" \
+            '{version:"1.0",trustPolicies:[{name:"jmainguy",registryScopes:[$scope],signatureVerification:{level:"strict"},trustStores:["ca:jmainguy"],trustedIdentities:["*"]}]}' \
             > "${notation_config}/notation/trustpolicy.json"
           artifact="${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}@${DIGEST}"
           XDG_CONFIG_HOME="${notation_config}" notation sign --key jon-soh-re "${artifact}"
