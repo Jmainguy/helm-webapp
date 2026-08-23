@@ -14,4 +14,4 @@ permissions:
 
 jobs:
   helm-ci:
-    uses: Jmainguy/helm-workflows/.github/workflows/helm-ci.yml@v1.1.0
+    uses: Jmainguy/helm-workflows/.github/workflows/helm-ci.yml@v1.3.0
