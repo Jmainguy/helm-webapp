@@ -40,8 +40,10 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v5.0.1
 
-      - name: Set up Cosign
-        uses: sigstore/cosign-installer@v4.1.2
+      - name: Set up Notation
+        uses: notaryproject/notation-action/setup@v1.2.2
+        with:
+          version: 1.3.2
 
       - name: Add release annotations
         env:
@@ -63,7 +65,7 @@ jobs:
           test -n "${HELM_USER}"
           test -n "${HELM_PASS}"
           printf '%s' "${HELM_PASS}" | helm registry login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
-          printf '%s' "${HELM_PASS}" | cosign login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
+          printf '%s' "${HELM_PASS}" | notation login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
 
       - name: Package and push chart
         id: push
@@ -77,20 +79,31 @@ jobs:
 
       - name: Sign and verify chart digest
         env:
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+          NOTATION_PRIVATE_KEY: ${{ secrets.NOTATION_PRIVATE_KEY }}
+          NOTATION_CERTIFICATE_CHAIN: ${{ secrets.NOTATION_CERTIFICATE_CHAIN }}
+          NOTATION_CA_CERTIFICATE: ${{ secrets.NOTATION_CA_CERTIFICATE }}
           DIGEST: ${{ steps.push.outputs.digest }}
         run: |
-          key_file="$(mktemp)"
-          public_key_file="$(mktemp)"
-          trap 'rm -f "${key_file}" "${public_key_file}"' EXIT
-          chmod 600 "${key_file}" "${public_key_file}"
-          printf '%s' "${COSIGN_PRIVATE_KEY}" > "${key_file}"
-          printf '%s' "${COSIGN_PUBLIC_KEY}" > "${public_key_file}"
+          notation_config="${RUNNER_TEMP}/notation-config"
+          signing_dir="${RUNNER_TEMP}/notation-signing"
+          mkdir -p "${notation_config}/notation/truststore/x509/ca/jmainguy" "${signing_dir}"
+          chmod 700 "${notation_config}" "${signing_dir}"
+          key_file="${signing_dir}/signer.key"
+          certificate_file="${signing_dir}/certificate-chain.pem"
+          printf '%s' "${NOTATION_PRIVATE_KEY}" > "${key_file}"
+          printf '%s' "${NOTATION_CERTIFICATE_CHAIN}" > "${certificate_file}"
+          printf '%s' "${NOTATION_CA_CERTIFICATE}" > "${notation_config}/notation/truststore/x509/ca/jmainguy/ca.crt"
+          chmod 600 "${key_file}" "${certificate_file}"
+          jq -n \
+            --arg key "${key_file}" \
+            --arg certificate "${certificate_file}" \
+            '{default:"jon-soh-re",keys:[{name:"jon-soh-re",keyPath:$key,certPath:$certificate}]}' \
+            > "${notation_config}/notation/signingkeys.json"
+          jq -n '{version:"1.0",trustPolicies:[{name:"jmainguy",registryScopes:["zot.soh.re/jmainguy/*"],signatureVerification:{level:"strict"},trustStores:["ca:jmainguy"],trustedIdentities:["*"]}]}' \
+            > "${notation_config}/notation/trustpolicy.json"
           artifact="${REGISTRY}/${REGISTRY_NAMESPACE}/${CHART_NAME}@${DIGEST}"
-          cosign sign --yes --key "${key_file}" "${artifact}"
-          cosign verify --key "${public_key_file}" "${artifact}"
+          XDG_CONFIG_HOME="${notation_config}" notation sign --key jon-soh-re "${artifact}"
+          XDG_CONFIG_HOME="${notation_config}" notation verify "${artifact}"
 
       - name: Verify published chart
         run: |
