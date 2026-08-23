@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.2](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.1...helm-webapp-v4.2.2) (2026-08-23)
+
+
+### Bug Fixes
+
+* **ci:** generate README for every release ([3f1a59b](https://github.com/Jmainguy/helm-webapp/commit/3f1a59ba9ae059d56847ace5dd44a8b5266dffd3))
+
 ## [4.2.1](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.0...helm-webapp-v4.2.1) (2026-08-23)
 
 
