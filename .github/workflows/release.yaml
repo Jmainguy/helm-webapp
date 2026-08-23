@@ -63,6 +63,7 @@ jobs:
           test -n "${HELM_USER}"
           test -n "${HELM_PASS}"
           printf '%s' "${HELM_PASS}" | helm registry login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
+          printf '%s' "${HELM_PASS}" | cosign login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
 
       - name: Package and push chart
         id: push
