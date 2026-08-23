@@ -11,11 +11,85 @@ permissions:
 
 jobs:
   release-please:
-    uses: Jmainguy/helm-workflows/.github/workflows/helm-release.yml@v1.1.0
-    secrets:
-      helm_username: ${{ secrets.HELM_USERNAME }}
-      helm_password: ${{ secrets.HELM_PASSWORD }}
-    with:
-      helm_registry: zot.soh.re
-      chart_name: "webapp"
-      chart_path: "."
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      version: ${{ steps.release.outputs.major }}.${{ steps.release.outputs.minor }}.${{ steps.release.outputs.patch }}
+    steps:
+      - name: Create release
+        id: release
+        uses: googleapis/release-please-action@v5.0.0
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+  publish:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    env:
+      CHART_NAME: webapp
+      CHART_VERSION: ${{ needs.release-please.outputs.version }}
+      REGISTRY: zot.soh.re
+    steps:
+      - name: Check out release commit
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.0.1
+
+      - name: Set up Cosign
+        uses: sigstore/cosign-installer@v4.1.2
+
+      - name: Add release annotations
+        env:
+          CREATED: ${{ github.event.head_commit.timestamp }}
+          REVISION: ${{ github.sha }}
+        run: |
+          cat >> Chart.yaml <<EOF
+            org.opencontainers.image.created: "${CREATED}"
+            org.opencontainers.image.revision: "${REVISION}"
+            org.opencontainers.image.version: "${CHART_VERSION}"
+          EOF
+          helm lint .
+
+      - name: Log in to Zot
+        env:
+          HELM_USER: ${{ secrets.HELM_USERNAME }}
+          HELM_PASS: ${{ secrets.HELM_PASSWORD }}
+        run: |
+          test -n "${HELM_USER}"
+          test -n "${HELM_PASS}"
+          printf '%s' "${HELM_PASS}" | helm registry login "${REGISTRY}" --username "${HELM_USER}" --password-stdin
+
+      - name: Package and push chart
+        id: push
+        run: |
+          helm package . --version "${CHART_VERSION}"
+          push_output="$(helm push "${CHART_NAME}-${CHART_VERSION}.tgz" "oci://${REGISTRY}")"
+          printf '%s\n' "${push_output}"
+          digest="$(printf '%s\n' "${push_output}" | awk '/^Digest: / { print $2 }')"
+          test -n "${digest}"
+          echo "digest=${digest}" >> "${GITHUB_OUTPUT}"
+
+      - name: Sign and verify chart digest
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: |
+          key_file="$(mktemp)"
+          public_key_file="$(mktemp)"
+          trap 'rm -f "${key_file}" "${public_key_file}"' EXIT
+          chmod 600 "${key_file}" "${public_key_file}"
+          printf '%s' "${COSIGN_PRIVATE_KEY}" > "${key_file}"
+          printf '%s' "${COSIGN_PUBLIC_KEY}" > "${public_key_file}"
+          artifact="${REGISTRY}/${CHART_NAME}@${DIGEST}"
+          cosign sign --yes --key "${key_file}" "${artifact}"
+          cosign verify --key "${public_key_file}" "${artifact}"
+
+      - name: Verify published chart
+        run: |
+          helm show chart "oci://${REGISTRY}/${CHART_NAME}" --version "${CHART_VERSION}"
