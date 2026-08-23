@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/Jmainguy/helm-webapp/compare/webapp-v3.2.1...webapp-v3.3.0) (2026-08-23)
+
+
+### Features
+
+* **ci:** sign labeled Helm releases with Cosign ([453ecd3](https://github.com/Jmainguy/helm-webapp/commit/453ecd3e7bb6ffd8ea5adc9cba131e6f7a545f29))
+
 ## [3.2.1](https://github.com/Jmainguy/helm-webapp/compare/webapp-v3.2.0...webapp-v3.2.1) (2026-08-02)
 
 
