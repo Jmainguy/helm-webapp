@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.3](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.2...helm-webapp-v4.2.3) (2026-08-23)
+
+
+### Bug Fixes
+
+* **persistence:** support per-volume access modes ([bcb73a2](https://github.com/Jmainguy/helm-webapp/commit/bcb73a24e437945083780681d86d3180b3c92679))
+
 ## [4.2.2](https://github.com/Jmainguy/helm-webapp/compare/helm-webapp-v4.2.1...helm-webapp-v4.2.2) (2026-08-23)
 
 
