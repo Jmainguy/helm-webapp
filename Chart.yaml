@@ -1,7 +1,7 @@
 apiVersion: v2
 name: helm-webapp
 description: A helm chart for a standard webapp using istio ingress
-version: 4.1.2
+version: 4.1.3
 annotations:
   org.opencontainers.image.title: "helm-webapp"
   org.opencontainers.image.description: "A helm chart for a standard webapp using istio ingress"
