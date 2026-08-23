@@ -7,7 +7,7 @@ metadata:
   name: {{ $.Values.name }}-{{ .name }}-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - {{ .accessMode | default "ReadWriteMany" }}
   resources:
     requests:
       storage: {{ .size }}

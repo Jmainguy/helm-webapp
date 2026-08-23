@@ -69,6 +69,7 @@ persistence: []
   # - name: data                    # Volume name (used as volume mount name)
   #   mountPath: /data              # Where to mount in the container
   #   size: 1Gi                     # Size when creating a new PVC (omit if using existingClaim)
+  #   accessMode: ReadWriteMany      # Optional: PVC access mode (for example, ReadWriteOnce)
   #   existingClaim: ""             # Optional: name of existing PVC to use (do not create one)
   #   volumeName: ""                # Optional: when creating PVC, bind to this existing PV by name
 
